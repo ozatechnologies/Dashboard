@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server Status</title>
+    <style>
+        @keyframes slide {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .sliding-title {
+            animation: slide 10s linear infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="sliding-title">Server Status Dashboard</h1>
+<head>
+    <title>Live Server Dashboard - SYST Una HQ</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .graph-container {
+            margin-top: 50px;
+        }
+
+        .speedometer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .speedometer {
+            width: 200px;
+            height: 200px;
+            background-color: #333;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .needle {
+            width: 10px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            transition: transform 0.3s ease;
+        }
+
+        .speed-label {
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Server 1 -->
+        <div class="section">
+            <h2>Manibhadra 400TB</h2>
+            <div class="status">Status: <span id="server1-status">Online</span></div>
+            <div class="details">
+                <p>CPU Usage: <span id="server1-cpu">40%</span></p>
+                <p>Memory Usage: <span id="server1-memory">60%</span></p>
+            </div>
+        </div>
+        
+        <div class="container">
+        <!-- Server 1 -->
+        <div class="section">
+        <h2>Gajapati Chandrabhushan 400TB</h2>
+        <div class="status">Status: <span id="server1-status">Online</span></div>
+        <div class="details">
+        <p>CPU Usage: <span id="server1-cpu">40%</span></p>
+        <p>Memory Usage: <span id="server1-memory">60%</span></p>
+        </div>
+        </div>
+
+        <!-- Server 2 -->
+        <div class="section">
+            <h2>Prachand 200GB</h2>
+            <div class="status">Status: <span id="server2-status">Online</span></div>
+            <div class="details">
+                <p>CPU Usage: <span id="server2-cpu">50%</span></p>
+                <p>Memory Usage: <span id="server2-memory">70%</span></p>
+            </div>
+        </div>
+
+        <!-- Server 3 -->
+        <div class="section">
+            <h2>Kaddakal 400GB</h2>
+            <div class="status">Status: <span id="server3-status">Online</span></div>
+            <div class="details">
+                <p>CPU Usage: <span id="server3-cpu">90%</span></p>
+                <p>Memory Usage: <span id="server3-memory">OPEN95</span></p>
+            </div>
+        </div>
+
+        <!-- Server 4 -->
+        <div class="section">
+            <h2>Tathya 300GB</h2>
+            <div class="status">Status: <span id="server4-status">Online</span></div>
+            <div class="details">
+                <p>CPU Usage: <span id="server4-cpu">70%</span></p>
+                <p>Memory Usage: <span id="server4-memory">90%</span></p>
+            </div>
+        </div>
+
+        <!-- Server 5 -->
+        <div class="section">
+            <h2>Devika 900GB</h2>
+            <div class="status">Status: <span id="server5-status">Online</span></div>
+            <div class="details">
+                <p>CPU Usage: <span id="server5-cpu">80%</span></p>
+                <p>Memory Usage: <span id="server5-memory">95%</span></p>
+            </div>
+        </div>
+
+        <!-- Server 6 -->
+        <div class="section">
+            <h2>Bengaluru 600TB</h2>
+            <div class="status">Status: <span id="server6-status">Online</span></div>
+            <div class="details">
+                <p>CPU Usage: <span id="server6-cpu">90%</span></p>
+                <p>Memory Usage: <span id="server6-memory">75%</span></p>
+            </div>
+        </div>
+
+        <!-- Network CPU Usage -->
+        <div class="section">
+            <h2>Network CPU Usage</h2>
+            <div class="speedometer-container">
+                <div class="speedometer">
+                    <div class="needle" id="network-cpu-needle"></div>
+                </div>
+            </div>
+            <div class="speed-label">CPU Usage: <span id="network-cpu-label">0%</span></div>
+        </div>
+
+        <!-- Usage Chart -->
+        <div class="graph-container">
+            <canvas id="usage-chart"></canvas>
+        </div>
+
+        <!-- Alert Sound -->
+        <audio id="alert-sound">
+            <source src="https://firebasestorage.googleapis.com/v0/b/fund-b1a1b.appspot.com/o/beep-08b.mp3?alt=media&token=9734cb84-a072-4985-bc1d-9836f924d7a1"
+                type="audio/mp3">
+        </audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const servers = [
+            { name: "Manibhadra 400TB", cpu: 40, memory: 60 },
+            { name: "Prachand 200GB", cpu: 50, memory: 70 },
+            { name: "Kaddakal 400GB", cpu: 60, memory: 80 },
+            { name: "Tathya 300GB", cpu: 70, memory: 90 },
+            { name: "Devika 900GB", cpu: 80, memory: 95 },
+            { name: "Bengaluru 600TB", cpu: 90, memory: 75 }
+        ];
+
+        // Update server data and status
+        function updateServerData() {
+            servers.forEach((server, index) => {
+                const serverStatusElement = document.getElementById(`server${index + 1}-status`);
+                const serverCpuElement = document.getElementById(`server${index + 1}-cpu`);
+                const serverMemoryElement = document.getElementById(`server${index + 1}-memory`);
+
+                // Simulate random status update
+                const randomStatus = Math.random() < 0.8 ? "Online" : "Offline";
+                serverStatusElement.textContent = randomStatus;
+
+                // Update CPU and Memory usage
+                server.cpu += getRandomValue();
+                server.memory += getRandomValue();
+                server.cpu = Math.min(100, server.cpu);
+                server.memory = Math.min(100, server.memory);
+                serverCpuElement.textContent = `${server.cpu}%`;
+                serverMemoryElement.textContent = `${server.memory}%`;
+
+                // Check if any server exceeds the threshold (CPU > 90% or Memory > 90%)
+                if (server.cpu > 90 || server.memory > 90) {
+                    serverStatusElement.classList.add("blink");
+                    playAlertSound();
+                } else {
+                    serverStatusElement.classList.remove("blink");
+                }
+            });
+        }
+
+        // Generate random value between -5 and 5
+        function getRandomValue() {
+            return Math.floor(Math.random() * 11) - 5;
+        }
+
+        // Play alert sound
+        function playAlertSound() {
+            const alertSound = document.getElementById("alert-sound");
+            alertSound.play();
+        }
+
+        // Update network CPU usage
+        function updateNetworkCpuUsage() {
+            const networkCpuNeedle = document.getElementById("network-cpu-needle");
+            const networkCpuLabel = document.getElementById("network-cpu-label");
+
+            const cpuUsage = servers.reduce((total, server) => total + server.cpu, 0) / servers.length;
+            networkCpuLabel.textContent = `${cpuUsage.toFixed(2)}%`;
+
+            const angle = 45 + (cpuUsage / 100) * 270;
+            networkCpuNeedle.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+        }
+
+        // Initialize usage chart
+        function initializeUsageChart() {
+            const usageChartCanvas = document.getElementById("usage-chart");
+            const labels = servers.map(server => server.name);
+            const data = servers.map(server => server.memory);
+
+            new Chart(usageChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Memory Usage',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: value => `${value}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update server data and network CPU usage every 3 seconds
+        setInterval(() => {
+            updateServerData();
+            updateNetworkCpuUsage();
+        }, 3000);
+
+        // Initialize usage chart
+        initializeUsageChart();
+    </script>
+</body>
+
+</html>
+
